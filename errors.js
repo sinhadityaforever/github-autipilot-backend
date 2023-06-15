@@ -1,4 +1,4 @@
-export default errorList = {
+const errorList = {
 	authError: {
 		code: 401,
 		message: 'Unauthorized'
@@ -20,3 +20,4 @@ export default errorList = {
 		message: 'Incorrect password'
 	}
 };
+exports.default = errorList;

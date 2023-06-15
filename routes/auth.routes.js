@@ -8,7 +8,7 @@ const errorList = require('../errors');
 //Sign up
 router.post('/signup', async (req, res, next) => {
 	try {
-		const { email, password } = req.body;
+		const { email, password, firstname, lastname } = req.body;
 		const existingUser = await User.findOne({ email });
 		if (existingUser) {
 			return res
@@ -16,7 +16,7 @@ router.post('/signup', async (req, res, next) => {
 				.json({ message: errorList.default.userExistsError.message });
 		}
 
-		const user = new User({ email, password });
+		const user = new User({ email, password, firstname, lastname });
 		await user.save();
 		res.status(201).json({ message: 'User created' });
 	} catch (error) {
@@ -47,11 +47,9 @@ router.post('/login', async (req, res, next) => {
 			});
 		}
 
-		const token = jwt.sign(
-			{ email: user.email, userId: user._id },
-			process.env.JWT_KEY,
-			{ expiresIn: '1h' }
-		);
+		const token = jwt.sign({ userId: user._id }, process.env.JWT_KEY, {
+			expiresIn: '1h'
+		});
 
 		res.status(200).json({
 			token
@@ -63,3 +61,5 @@ router.post('/login', async (req, res, next) => {
 		});
 	}
 });
+
+module.exports = router;

@@ -25,9 +25,11 @@ require('./db');
 
 // Import routes
 const testRoutes = require('./routes/test.routes');
+const authRoutes = require('./routes/auth.routes');
 
 // Register routes
 app.use('/test', testRoutes);
+app.use('/auth', authRoutes);
 
 // Start the server
 const port = process.env.PORT || 5000;
