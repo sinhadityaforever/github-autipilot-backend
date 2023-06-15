@@ -21,10 +21,10 @@ app.use(bodyParser.json());
 app.use(helmet());
 
 // Connect to MongoDB
-// require('./db');
+require('./db');
 
 // Import routes
-const testRoutes = require('./routes/testRoutes');
+const testRoutes = require('./routes/test.routes');
 
 // Register routes
 app.use('/test', testRoutes);
