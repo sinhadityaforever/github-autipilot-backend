@@ -4,8 +4,8 @@ const authMiddleWare = (req, res, next) => {
 	const token = req.headers.authorization.split(' ')[1];
 
 	if (!token) {
-		return res.status(errorList.default.unauthorizedError.code).json({
-			message: errorList.default.unauthorizedError.message
+		return res.status(errorList.default.authError.code).json({
+			message: errorList.default.authError.message
 		});
 	}
 	try {
@@ -13,8 +13,8 @@ const authMiddleWare = (req, res, next) => {
 		req.userId = decodedToken.userId;
 		next();
 	} catch (error) {
-		res.status(errorList.default.unauthorizedError.code).json({
-			message: errorList.default.unauthorizedError.message,
+		res.status(errorList.default.authError.code).json({
+			message: errorList.default.authError.message,
 			error
 		});
 	}
