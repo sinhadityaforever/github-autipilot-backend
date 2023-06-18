@@ -16,7 +16,8 @@ userController.getUserInfo = async (req, res, next) => {
 		res.status(200).json({
 			firstname: user.firstname,
 			lastname: user.lastname,
-			email: user.email
+			email: user.email,
+			profilePicture: user.profilePicture
 		});
 	} catch (error) {
 		res.status(errorList.default.unknownError.code).json({

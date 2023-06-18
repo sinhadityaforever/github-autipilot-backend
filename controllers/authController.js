@@ -2,6 +2,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 const errorList = require('../errors');
+const profilePicURL = require('../profileAvatarGenerator');
 
 const authController = {};
 
@@ -15,10 +16,19 @@ authController.signup = async (req, res, next) => {
 				.json({ message: errorList.default.userExistsError.message });
 		}
 
-		const user = new User({ email, password, firstname, lastname });
+		const profilePicture = profilePicURL();
+		console.log(profilePicture);
+		const user = new User({
+			email,
+			password,
+			firstname,
+			lastname,
+			profilePicture
+		});
 		await user.save();
 		res.status(200).json({ message: 'User created' });
 	} catch (error) {
+		console.log(error);
 		res.status(errorList.default.unknownError.code).json({
 			message: errorList.default.unknownError.message,
 			error

@@ -11,7 +11,8 @@ const userSchema = new mongoose.Schema({
 	country: { type: String },
 	postalcode: { type: String },
 	firstname: { type: String, required: true },
-	lastname: { type: String, required: true }
+	lastname: { type: String, required: true },
+	profilePicture: { type: String }
 });
 
 // Hash the password before saving
