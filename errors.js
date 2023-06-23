@@ -18,6 +18,14 @@ const errorList = {
 	incorrectPasswordError: {
 		code: 403,
 		message: 'Incorrect password'
+	},
+	transactionFetchError: {
+		code: 404,
+		message: 'Cannot fetch transactions'
+	},
+	transactionCreateError: {
+		code: 405,
+		message: 'Cannot create transaction'
 	}
 };
 exports.default = errorList;
