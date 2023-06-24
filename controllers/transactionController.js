@@ -1,6 +1,6 @@
 // Import any necessary dependencies, models, or services
 const { default: errors } = require('../errors');
-const Transaction = require('../models/Transaction');
+const Transaction = require('../models/transactionmodel');
 
 // Handler for GET /transactions
 async function getAllTransactionsData(req, res) {
@@ -11,6 +11,16 @@ async function getAllTransactionsData(req, res) {
 
 		//1.  transactions format for client: {name, transactionId, date, type, category, amount} (This will be used for further processing)
 		const transactions = await Transaction.find({ userId });
+
+		// *. Prepare transactions data for the client
+		const transactionsData = transactions.map((transaction) => ({
+			name: transaction.name,
+			transactionId: transaction._id,
+			date: transaction.date,
+			type: transaction.type,
+			category: transaction.category,
+			amount: transaction.amount
+		  }));
 
 		//2.  lastFiveYearsData format for client: {index, income, expense}, index =0 (this year), =-1 (last year), =-2 (2 years ago), =-3 (3 years ago), =-4 (4 years ago), =-5 (5 years ago)
 		const lastFiveYearData = [];
@@ -42,10 +52,121 @@ async function getAllTransactionsData(req, res) {
 
 		//3. thisYearData format for client: {index, income, expenditure}, index =0 (this month), =-1 (last month), =-2 (2 months ago), =-3 (3 months ago), till -12 (12 months ago)
 
-		const thisYearData = []; //Add logic below
+		const thisYearData = []; 
+		const currentDate = new Date();
+
+for (let i = 0; i >= -12; i--) {
+  const month = currentDate.getMonth() + i;
+  const year = currentDate.getFullYear();
+  const monthData = {
+    index: i,
+    income: 0,
+    expenditure: 0
+  };
+
+  const filteredTransactions = transactions.filter((transaction) => {
+    const transactionDate = new Date(transaction.date);
+    return (
+      transactionDate.getFullYear() === year &&
+      transactionDate.getMonth() === month
+    );
+  });
+
+  filteredTransactions.forEach((transaction) => {
+    if (transaction.type === 'income') {
+      monthData.income += transaction.amount;
+    } else if (transaction.type === 'expense') {
+      monthData.expenditure += transaction.amount;
+    }
+  });
+
+  thisYearData.push(monthData);
+}//Add logic below
 
 		//4. sixMonthsCategoryData format: {categoryId, data=[thisMonth, lastMonth, 2MonthsAgo, 3MonthsAgo, 4MonthsAgo, 5MonthsAgo, 6MonthsAgo]}
-		const sixMonthsCategoryData = []; //Add logic below
+		
+		
+		const categories = [
+			{ id: 0, value: 'Food', type: 'expense' },
+			{ id: 1, value: 'Business', type: 'income' },
+			{ id: 2, value: 'Clothes', type: 'expense' },
+			{ id: 3, value: 'Education', type: 'expense' },
+			{ id :4, value: 'Entertainment', type: 'expense' },
+			{ id: 5, value: 'Health', type: 'expense' },
+			{ id: 6, value: 'Gifts', type: 'expense' },
+			{ id: 7, value: 'Investments', type: 'income' },
+			{ id: 8, value: 'Other', type: 'expense' },
+			{ id: 9, value: 'Salary', type: 'income' },
+			{ id: 9, value: 'Other', type: 'income' }
+		  ];
+		 
+
+		
+const sixMonthsAgo = new Date();
+sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 5);
+
+// Create an array to store the six months category data
+const sixMonthsCategoryData = [];
+
+// Loop through each category
+for (const category of categories) {
+  const categoryId = category.id;
+  const categoryVal = category.value;
+  
+
+  const categoryData = [];
+
+  // Loop through each month for the last six months
+  let currentDatePointer = new Date(sixMonthsAgo);
+  while (currentDatePointer <= currentDate) {
+    const startDate = new Date(currentDatePointer);
+    startDate.setDate(1); // Set the start date to the 1st day of the month
+    const endDate = new Date(startDate);
+    endDate.setMonth(endDate.getMonth() + 1);
+    endDate.setDate(0);
+
+    // Filter transactions for the current category and month
+    const filteredTransactions = transactions.filter((transaction) => {
+      const transactionDate = new Date(transaction.date);
+      return (
+        transaction.category === categoryVal &&
+        transactionDate >= startDate &&
+        transactionDate <= endDate
+      );
+    });
+
+    // Calculate the total amount for the current category and month
+    const totalAmount = filteredTransactions.reduce(
+      (total, transaction) => total + transaction.amount,
+      0
+    );
+
+    // Add the total amount to the category data array
+    categoryData.push(totalAmount);
+
+    // Move to the next month
+    currentDatePointer.setMonth(currentDatePointer.getMonth() + 1);
+  }
+
+  // Add the category data to the six months category data array
+  sixMonthsCategoryData.push({
+    categoryId,
+    data: categoryData,
+  });
+}
+
+   
+
+
+
+
+
+
+
+		
+		
+		
+		//Add logic below
 
 		//send all the data to the client
 		res.status(200).json({
@@ -137,4 +258,4 @@ module.exports = {
 	createTransaction,
 	updateTransaction,
 	deleteTransaction
-};
+}
