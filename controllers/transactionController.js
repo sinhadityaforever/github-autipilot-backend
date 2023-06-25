@@ -177,11 +177,11 @@ async function createTransaction(req, res) {
 
 	try {
 		// Create a new transaction using the transactionData
-		await Transaction.create(transactionData);
+		const newTransaction = await Transaction.create(transactionData);
 
 		res.status(200).json({
 			message: 'Transaction created successfully',
-			transactionId: transactionData._id
+			transactionId: newTransaction._id
 		});
 	} catch (error) {
 		// Handle any errors that occur
@@ -224,6 +224,7 @@ async function updateTransaction(req, res) {
 // Handler for DELETE /transactions/:transactionId
 async function deleteTransaction(req, res) {
 	const transactionId = req.params.transactionId;
+	console.log(transactionId);
 	const userId = req.userId;
 	try {
 		// Find the transaction by ID and delete it
@@ -234,6 +235,7 @@ async function deleteTransaction(req, res) {
 				.status(403)
 				.json({ message: 'You are not authorized to delete this transaction' });
 		}
+		console.log('done');
 		await Transaction.findByIdAndDelete(transactionId);
 
 		// Send a success response
