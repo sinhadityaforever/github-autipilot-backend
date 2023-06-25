@@ -6,7 +6,7 @@ const bcrypt = require('bcrypt');
 const userSchema = new mongoose.Schema({
 	email: { type: String, required: true, unique: true },
 	password: { type: String, required: true },
-	phone: { type: String },
+	phone: { type: Number },
 	address: { type: String },
 	country: { type: String },
 	postalcode: { type: String },
@@ -29,7 +29,5 @@ userSchema.pre('save', async function (next) {
 		return next(error);
 	}
 });
-
-
 
 module.exports = mongoose.model('User', userSchema);

@@ -179,7 +179,10 @@ async function createTransaction(req, res) {
 		// Create a new transaction using the transactionData
 		await Transaction.create(transactionData);
 
-		res.status(200).json({ message: 'Transaction created successfully' });
+		res.status(200).json({
+			message: 'Transaction created successfully',
+			transactionId: transactionData._id
+		});
 	} catch (error) {
 		// Handle any errors that occur
 		res
@@ -197,22 +200,23 @@ async function updateTransaction(req, res) {
 	try {
 		// Find the transaction by ID and update it with the updatedTransactionData
 		const transaction = await Transaction.findById(transactionId);
-		if (transaction.userId !== userId) {
+
+		if (JSON.stringify(transaction.userId) !== JSON.stringify(userId)) {
 			return res
 				.status(403)
 				.json({ message: 'You are not authorized to update this transaction' });
 		}
 		transaction.name = updatedTransactionData.name;
 		transaction.date = updatedTransactionData.date;
-		transaction.type = updatedTransactionData.type;
 		transaction.category = updatedTransactionData.category;
 		transaction.amount = updatedTransactionData.amount;
-		await transaction.save();
 
+		await transaction.save();
 		// Send the updated transaction as a response
 		res.status(200).json({ message: 'Transaction updated successfully' });
 	} catch (error) {
 		// Handle any errors that occur
+		console.log(error);
 		res.status(500).json({ error: 'An error occurred while updating' });
 	}
 }
@@ -224,7 +228,8 @@ async function deleteTransaction(req, res) {
 	try {
 		// Find the transaction by ID and delete it
 		const transaction = await Transaction.findById(transactionId);
-		if (transaction.userId !== userId) {
+
+		if (JSON.stringify(transaction.userId) !== JSON.stringify(userId)) {
 			return res
 				.status(403)
 				.json({ message: 'You are not authorized to delete this transaction' });
