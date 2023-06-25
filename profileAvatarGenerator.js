@@ -130,20 +130,7 @@ const eyebrows = [
 	'UpDown',
 	'UpDownNatural'
 ];
-const mouth = [
-	'Concerned',
-	'Default',
-	'Disbelief',
-	'Eating',
-	'Grimace',
-	'Sad',
-	'ScreamOpen',
-	'Serious',
-	'Smile',
-	'Tongue',
-	'Twinkle',
-	'Vomit'
-];
+const mouth = ['Smile', 'Tongue', 'Twinkle'];
 const skin = [
 	'Tanned',
 	'Yellow',
