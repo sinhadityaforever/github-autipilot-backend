@@ -22,7 +22,9 @@ userController.getUserInfo = async (req, res, next) => {
 			phone: user.phone,
 			address: user.address,
 			country: user.country,
-			postalcode: user.postalcode
+			postalcode: user.postalcode,
+			monthBudget: user.monthBudget,
+			yearBudget: user.yearBudget
 		});
 	} catch (error) {
 		res.status(errorList.default.unknownError.code).json({
@@ -77,6 +79,31 @@ userController.getNewAvatar = async (req, res, next) => {
 	try {
 		const profilePicture = profilePicURL();
 		res.status(200).json({ profilePicture });
+	} catch (error) {
+		res.status(errorList.default.unknownError.code).json({
+			message: errorList.default.unknownError.message,
+			error
+		});
+	}
+};
+
+userController.updateUserBudget = async (req, res, next) => {
+	try {
+		console.log('hit');
+		const userId = req.userId;
+		const { monthBudget, yearBudget } = req.body;
+		const user = await User.findById(userId);
+		if (!user) {
+			return res.status(errorList.default.userNotFoundError.code).json({
+				message: errorList.default.userNotFoundError.message
+			});
+		}
+		if (monthBudget) user.monthBudget = monthBudget;
+		if (yearBudget) user.yearBudget = yearBudget;
+		await user.save();
+		res.status(200).json({
+			message: 'User info updated successfully'
+		});
 	} catch (error) {
 		res.status(errorList.default.unknownError.code).json({
 			message: errorList.default.unknownError.message,

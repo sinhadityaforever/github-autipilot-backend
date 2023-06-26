@@ -12,7 +12,9 @@ const userSchema = new mongoose.Schema({
 	postalcode: { type: String },
 	firstname: { type: String, required: true },
 	lastname: { type: String, required: true },
-	profilePicture: { type: String }
+	profilePicture: { type: String },
+	monthBudget: { type: Number, default: 0 },
+	yearBudget: { type: Number, default: 0 }
 });
 
 // Hash the password before saving
